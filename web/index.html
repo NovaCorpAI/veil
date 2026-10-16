@@ -52,6 +52,7 @@
     <tr><td>init (SAC de XLM, 10 XLM)</td><td><a class="mono" target="_blank" href="https://stellar.expert/explorer/testnet/tx/528f08c2890a9af3933586f7bcbdbade60b749b0255d676254f357824bc3c6a9">528f08c2…c3c6a9</a></td></tr>
     <tr><td>deposit · alice → pool</td><td><a class="mono" target="_blank" href="https://stellar.expert/explorer/testnet/tx/4b1a171b06f72494819c53daeca290a513af76d5f7c776b230c04ffb84cff213">4b1a171b…cff213</a></td></tr>
     <tr><td>withdraw · carol firma, dave recibe (prueba ZK)</td><td><a class="mono" target="_blank" href="https://stellar.expert/explorer/testnet/tx/188ac2f97bd036eb23db15955ed3db0211d1cd36ad3a6a6aecdb39f748268347">188ac2f9…268347</a></td></tr>
+    <tr><td>corrida 2 (con OpenRouter en el flujo) · deposit / withdraw</td><td><a class="mono" target="_blank" href="https://stellar.expert/explorer/testnet/tx/b54d05bb7d2672e1592c4dd2c05b7b2c1172f515bf3798f8c75478b790a4bdea">b54d05bb…</a> / <a class="mono" target="_blank" href="https://stellar.expert/explorer/testnet/tx/b5297eccf3783bff3cd1614b9ad3cc430b4d61c9039a0c1889fc6b7be2f08482">b5297ecc…</a> · IA: "riesgo medio, esperar más depósitos"</td></tr>
     <tr><td>withdraw con la misma nota</td><td class="bad">rechazado · <code>Error(Contract, #5) NullifierSpent</code></td></tr>
   </table>
 
@@ -59,9 +60,23 @@
   <table id="events"><tr><th>Ledger</th><th>Evento</th><th>Dato</th><th>Tx</th></tr></table>
 
   <h2>Verifícalo tú</h2>
+  <div class="grid">
+    <div class="card step"><div class="n">1</div><div><strong>Sin instalar nada (2 min).</strong> Abre el <a target="_blank" href="https://stellar.expert/explorer/testnet/contract/CA4D3V4DB6FPXM4K7WAOG4LHOI5L7Q6R2EI4CENKZKQGER5VUG3CL6QQ">contrato en stellar.expert</a>: cada <code>withdraw</code> lleva la prueba Groth16 como argumento y solo tuvo éxito porque el <code>pairing_check</code> BN254 pasó on-chain. Quien deposita (alice) y quien retira (carol) no tienen relación.</div></div>
+    <div class="card step"><div class="n">2</div><div><strong>Tests del contrato (5 min, solo Rust).</strong> <code>cd contracts && cargo test</code>: Poseidon == circomlib, una prueba real de snarkjs verifica y una alterada no, y el flujo completo con doble gasto rechazado.</div></div>
+    <div class="card step"><div class="n">3</div><div><strong>Demo contra el contrato (10 min).</strong> Node + Stellar CLI + 3 cuentas de testnet. Tu propio depósito, tu propia prueba, tu propio retiro. Pasos exactos en el README.</div></div>
+  </div>
   <pre>git clone https://github.com/NovaCorpAI/veil && cd veil && npm i
-bash scripts/demo.sh        # deposit (alice) → nota → withdraw (carol → dave) → doble retiro rechazado</pre>
-  <p class="lead" style="font-size:1rem">Lo que había que acertar: Poseidon on-chain idéntico a circomlib (<code>Poseidon(1,2)</code> verificado), y el orden <code>c1‖c0</code> de las coordenadas G2 entre snarkjs y las host functions. Las dos cosas se validaron con tests antes del deploy.</p>
+stellar keys generate alice --network testnet --fund   # idem carol y dave
+STELLAR=$(which stellar) bash scripts/demo.sh         # deposit → nota → withdraw con ZK → doble retiro rechazado</pre>
+  <table>
+    <tr><th>Entrega</th><th>Link</th></tr>
+    <tr><td>Pull request al repo del taller</td><td><a target="_blank" href="https://github.com/viniciorm/zk-pay-starter/pull/1">viniciorm/zk-pay-starter#1</a></td></tr>
+    <tr><td>Fork con la solución (<code>veil/</code> + <code>SOLUTION.md</code>)</td><td><a target="_blank" href="https://github.com/NovaCorpAI/zk-pay-starter">NovaCorpAI/zk-pay-starter</a></td></tr>
+    <tr><td>Repo de desarrollo con historial</td><td><a target="_blank" href="https://github.com/NovaCorpAI/veil">NovaCorpAI/veil</a></td></tr>
+    <tr><td>Cobertura de los 8 GAPs y checklist de unlinkability</td><td><a target="_blank" href="https://github.com/NovaCorpAI/zk-pay-starter/blob/main/SOLUTION.md">SOLUTION.md</a></td></tr>
+    <tr><td>Contrato</td><td><a class="mono" target="_blank" href="https://stellar.expert/explorer/testnet/contract/CA4D3V4DB6FPXM4K7WAOG4LHOI5L7Q6R2EI4CENKZKQGER5VUG3CL6QQ">CA4D3V4D…CL6QQ</a></td></tr>
+  </table>
+  <p class="lead" style="font-size:1rem;margin-top:16px">Lo que había que acertar: Poseidon on-chain idéntico a circomlib (<code>Poseidon(1,2)</code> verificado), y el orden <code>c1‖c0</code> de las coordenadas G2 entre snarkjs y las host functions. Las dos cosas se validaron con tests antes del deploy.</p>
 
   <footer>Veil · NovaCorp AI · Taller de Privacidad en Blockchain, Tellus Hub, 16 oct 2026 · <a href="https://github.com/NovaCorpAI/veil">código</a></footer>
 </div>
