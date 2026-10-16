@@ -28,6 +28,8 @@ Association sets / cumplimiento, relayer para pagar fees, montos variables, tran
 - `deposit(from, commitment)`: cobra 10 XLM, inserta el commitment en un Merkle tree incremental (Poseidon host function), guarda la raíz en un historial de 30 raíces, emite evento `deposit(commitment, leaf_index)`.
 - `withdraw(proof, root, nullifier_hash, recipient)`: verifica que `root` esté en el historial, que `nullifier_hash` no esté gastado, verifica la prueba Groth16 con las funciones host BN254, marca el nullifier y transfiere 10 XLM a `recipient`.
 
+**Paso de IA (requisito del hackathon):** antes de cada retiro, `client/openrouter.js` llama a la API de OpenRouter (modelo `openai/gpt-4.1-nano`, máx. 200 tokens) como asesor de privacidad: recibe solo el tamaño del anonymity set y la posición de la hoja (nunca la nota ni el commitment) y devuelve riesgo de vinculación + recomendación. Key en `.env`, nunca en frontend. Presupuesto: 1 llamada por retiro.
+
 **Cliente (Node CLI; web mínima si sobra tiempo):**
 - `deposit`: genera nota `veil-<nullifier>-<secret>`, calcula commitment con circomlibjs, llama `deposit`.
 - `withdraw <nota> <recipient>`: lee eventos del contrato, reconstruye el árbol, genera la prueba con snarkjs (wasm + zkey) y llama `withdraw`.

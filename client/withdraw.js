@@ -4,6 +4,7 @@ const path = require("path");
 const snarkjs = require("snarkjs");
 const tree = require("./tree");
 const { recipientFr } = require("./addr");
+const { privacyAdvisor } = require("./openrouter");
 const { g1, g2 } = require("./encode");
 const { loadDeploy, keypair, u256, bytes, addr, invoke, simulate, fetchDeposits, explorer } = require("./stellar");
 
@@ -27,6 +28,10 @@ const { loadDeploy, keypair, u256, bytes, addr, invoke, simulate, fetchDeposits,
   const kp = keypair(signer);
   const onchainRoot = await simulate(contractId, "root", [], kp.publicKey());
   if (BigInt(onchainRoot) !== root) throw new Error(`raíz local ${root} != raíz on-chain ${onchainRoot}`);
+
+  // Paso de IA (OpenRouter) en el flujo de pago: asesor de privacidad antes de retirar.
+  const advice = await privacyAdvisor({ deposits: deposits.length, leafIndex: idx });
+  console.error("[withdraw] asesor de privacidad: " + advice);
 
   const { pathElements, pathIndices } = t.path(idx);
   const input = {

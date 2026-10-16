@@ -6,3 +6,4 @@ circuits/build/*.zkey
 circuits/build/witness.wtns
 *.log
 web/.vercel/
+.env
