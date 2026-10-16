@@ -9,6 +9,10 @@
 | deposit alice → pool (10 XLM) | [4b1a171b…](https://stellar.expert/explorer/testnet/tx/4b1a171b06f72494819c53daeca290a513af76d5f7c776b230c04ffb84cff213) |
 | withdraw carol → dave (prueba Groth16 verificada on-chain) | [188ac2f9…](https://stellar.expert/explorer/testnet/tx/188ac2f97bd036eb23db15955ed3db0211d1cd36ad3a6a6aecdb39f748268347) |
 | doble retiro con la misma nota | rechazado: `Error(Contract, #5) NullifierSpent` |
+| **corrida 2 (con OpenRouter en el flujo)** deposit alice | [b54d05bb…](https://stellar.expert/explorer/testnet/tx/b54d05bb7d2672e1592c4dd2c05b7b2c1172f515bf3798f8c75478b790a4bdea) |
+| corrida 2 · OpenRouter `gen-1792187402-GNxDx9D4WlFacPD6RAOz` (gpt-4.1-nano, 202 tokens) → "riesgo medio, esperar más depósitos" | log de `withdraw.js` |
+| corrida 2 · withdraw carol → dave | [b5297ecc…](https://stellar.expert/explorer/testnet/tx/b5297eccf3783bff3cd1614b9ad3cc430b4d61c9039a0c1889fc6b7be2f08482) |
+| corrida 2 · doble retiro | rechazado: `Error(Contract, #5) NullifierSpent` |
 | Demo web | https://veil.agentposhq.com |
 | Código | https://github.com/NovaCorpAI/veil |
 
