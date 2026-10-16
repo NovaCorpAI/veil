@@ -32,6 +32,7 @@ commitment en el árbol sin revelar cuál.
 | 2 · Contrato | ✅ `contracts/veil_pool` — 4 tests: Poseidon(1,2) == circomlib, recipient→Fr, prueba real de snarkjs verifica on-chain (pairing BN254), flujo completo deposit/withdraw/doble-gasto |
 | 3 · Cliente | ✅ `client/deposit.js`, `client/withdraw.js` (eventos `getEvents` → árbol → snarkjs → invoke) |
 | 4 · Demo | ✅ `scripts/demo.sh` |
+| IA (requisito) | ✅ `client/openrouter.js`: asesor de privacidad vía OpenRouter antes de cada retiro (key en `.env`, ver `.env.example`) |
 
 ## Decisiones técnicas que había que acertar
 - **Poseidon on-chain = circomlib**: crate `soroban-poseidon` 28.0.0 (`poseidon_hash::<3, Bn254Fr>`); test vector
@@ -66,6 +67,8 @@ node client/withdraw.js <nota> <G...dest> carol # genera prueba y retira
 - soroban-sdk 28.0.0, soroban-poseidon 28.0.0. Testnet corre protocolo 29.
 - Powers of tau: los mirrors públicos del `.ptau` 2^16 devuelven 403, así que `ptau/pot14_final.ptau` se generó
   localmente con snarkjs (2^14 basta: < 2^13 restricciones). Solo demo; no es una ceremonia real.
+
+Entrega y checklist de unlinkability: `SOLUTION.md`.
 
 ## Fuera de alcance
 Association sets, relayer de fees, montos variables, web UI, mainnet.
