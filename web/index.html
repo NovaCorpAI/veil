@@ -84,7 +84,7 @@ async function rpc(method, params) {
 (async () => {
   try {
     const res = await rpc("getEvents", { startLedger: START, filters: [{ type: "contract", contractIds: [CID] }], pagination: { limit: 1000 } });
-    const tbl = document.getElementById("events"); let dep = 0, wit = 0;
+    const tbl = document.getElementById("events"), st = document.getElementById("status"); let dep = 0, wit = 0;
     for (const ev of res.events) {
       const kind = TOPICS[ev.topic[0]]; if (!kind) continue;
       const v = b64(ev.value); // ScVal vec: 12 bytes de cabecera, luego ScVal u256 (4 + 32)
@@ -96,8 +96,8 @@ async function rpc(method, params) {
       tr.innerHTML = `<td class="mono">${ev.ledger}</td><td class="${kind === "deposit" ? "ok" : ""}">${kind}</td><td>${data}</td><td><a class="mono" target="_blank" href="https://stellar.expert/explorer/testnet/tx/${ev.txHash}">${ev.txHash.slice(0, 8)}…</a></td>`;
     }
     nDep.textContent = dep; nWit.textContent = wit; pool.textContent = (dep - wit) * 10;
-    status.textContent = res.events.length ? "en vivo desde el RPC de testnet" : "sin eventos en la ventana de retención del RPC";
-  } catch (e) { status.textContent = "RPC no disponible: " + e.message; status.className = "pill bad"; }
+    st.textContent = res.events.length ? "en vivo desde el RPC de testnet" : "sin eventos en la ventana de retención del RPC";
+  } catch (e) { const st = document.getElementById("status"); st.textContent = "RPC no disponible: " + e.message; st.className = "pill bad"; }
 })();
 </script>
 </body>
