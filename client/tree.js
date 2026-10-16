@@ -64,6 +64,8 @@ if (require.main === module) {
   (async () => {
     await init();
     console.log("Poseidon(1,2) =", "0x" + hash2(1n, 2n).toString(16));
+    const { recipientFr } = require("./addr");
+    const RECIPIENT = process.argv[2] || "CBBEEQSCIJBEEQSCIJBEEQSCIJBEEQSCIJBEEQSCIJBEEQSCIJBEE5XW"; // fixture: C-address (sin trustline en test env)
     const nullifier = randomField(), secret = randomField();
     const c = commitment(nullifier, secret);
     const t = new MerkleTree();
@@ -72,10 +74,12 @@ if (require.main === module) {
     const { pathElements, pathIndices } = t.path(idx);
     const input = {
       root: t.root().toString(), nullifierHash: nullifierHash(nullifier).toString(),
-      recipient: "12345", nullifier: nullifier.toString(), secret: secret.toString(),
+      recipient: recipientFr(RECIPIENT).toString(), nullifier: nullifier.toString(), secret: secret.toString(),
       pathElements: pathElements.map(String), pathIndices: pathIndices.map(String),
     };
     require("fs").writeFileSync(__dirname + "/../circuits/build/input.json", JSON.stringify(input, null, 2));
-    console.log("wrote circuits/build/input.json; root =", input.root);
+    require("fs").writeFileSync(__dirname + "/../circuits/build/fixture.json", JSON.stringify({
+      recipient: RECIPIENT, leaves: t.layers[0].map(String), root: input.root, nullifierHash: input.nullifierHash }, null, 2));
+    console.log("wrote circuits/build/input.json + fixture.json; root =", input.root);
   })();
 }
