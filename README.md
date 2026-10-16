@@ -26,6 +26,23 @@ commitment en el árbol sin revelar cuál.
 - carol (firma el retiro): `GACFTWXM6RWGB5PDVFRCTBC5T3K6MS7NHKXMLGO3JPD6YH7IN6KZ3RLD`
 - dave (destinatario): `GDN5MJPTUSOEAMXMFD3LTYIG7JP4Z7UI746YQHLPK4QATSHZPDKGO2GA`
 
+## Para jueces: tres niveles de verificación
+
+**Nivel 1 · sin instalar nada (2 min).** Abrir el contrato en [stellar.expert](https://stellar.expert/explorer/testnet/contract/CA4D3V4DB6FPXM4K7WAOG4LHOI5L7Q6R2EI4CENKZKQGER5VUG3CL6QQ): hay 2 `deposit` y 2 `withdraw`. En cada withdraw, los args son la prueba (A, B, C), la raíz, el nullifierHash y el destinatario; la tx solo tuvo éxito porque el `pairing_check` BN254 pasó dentro del contrato. Las cuentas que firman (alice deposita, carol retira) no tienen relación on-chain. https://veil.agentposhq.com muestra lo mismo en vivo.
+
+**Nivel 2 · tests del contrato (5 min, solo Rust).** `cd contracts && cargo test`. Cuatro tests: Poseidon(1,2) == circomlib, recipient→Fr igual que el cliente, una prueba real de snarkjs (`src/test_fixture.rs`) verifica con el pairing BN254 y una alterada no, y el flujo completo deposit → withdraw → doble gasto rechazado con un SAC en el env de pruebas.
+
+**Nivel 3 · demo contra el contrato desplegado (10 min).** Necesita Node 20+, la Stellar CLI y cuentas de testnet; no necesita Rust ni circom porque el wasm, el zkey y la VK ya están en el repo.
+```bash
+npm i
+stellar keys generate alice --network testnet --fund
+stellar keys generate carol --network testnet --fund
+stellar keys generate dave  --network testnet --fund
+cp .env.example .env            # opcional: OPENROUTER_API_KEY; sin key el paso de IA usa un stub
+STELLAR=$(which stellar) bash scripts/demo.sh
+```
+Eso hace un depósito nuevo desde tu alice, retira con tu carol hacia tu dave con una prueba generada en tu máquina, e intenta el doble retiro. `deploy.json` apunta al contrato ya desplegado. Para desplegar uno propio: `bash scripts/deploy.sh` (requiere Rust + target `wasm32v1-none`).
+
 ## Fases
 | Fase | Estado |
 |------|--------|
