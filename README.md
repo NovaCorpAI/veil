@@ -5,6 +5,8 @@ Privacy pool estilo Tornado en Soroban: depósito fijo de 10 XLM, commitment en 
 
 ## Estado: ✅ desplegado y verificado en testnet
 
+Página de demo: **https://veil.agentposhq.com** (alias: https://veil-lime-alpha.vercel.app) · código: https://github.com/NovaCorpAI/veil
+
 | Qué | Valor |
 |-----|-------|
 | Contract ID | `CA4D3V4DB6FPXM4K7WAOG4LHOI5L7Q6R2EI4CENKZKQGER5VUG3CL6QQ` · [stellar.expert](https://stellar.expert/explorer/testnet/contract/CA4D3V4DB6FPXM4K7WAOG4LHOI5L7Q6R2EI4CENKZKQGER5VUG3CL6QQ) |
